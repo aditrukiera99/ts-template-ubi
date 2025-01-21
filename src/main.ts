@@ -1,17 +1,18 @@
-import { handleRouting, setupRouter } from "./router";
-import { initializeState } from "./on-load";
-
-setupRouter();
+import * as wallet from "./scripts/connect-wallet";
+import * as ui from "./scripts/ui";
+import * as mint from "./scripts/mint";
+import * as redeem from "./scripts/redeem";
 
 export async function mainModule() {
-  try {
-    await initializeState();
-    console.log("State initialized");
+  ui.initUiEvents();
 
-    await handleRouting();
-  } catch (error) {
-    console.error("Error in main: ", error);
-  }
+  wallet.updateConnectButtonText("");
+
+  await wallet.connectIfAuthorized();
+  await mint.initCollateralList();
+  await mint.initUiEvents();
+  await redeem.initCollateralList();
+  await redeem.initUiEvents();
 }
 
 mainModule()
